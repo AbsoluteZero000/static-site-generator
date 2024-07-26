@@ -14,7 +14,6 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
         for text in new_text:
             new_nodes.append(TextNode(text, "text" if is_normal_text else text_type))
             is_normal_text = not is_normal_text
-            print(new_nodes[-1])
     return new_nodes
 
 def extract_markdown_images(text):
@@ -22,3 +21,50 @@ def extract_markdown_images(text):
     
 def extract_markdown_links(text): 
     return re.findall(r"\[(.*?)\]\((.*?)\)", text)
+
+def split_nodes_image(old_nodes):
+    new_nodes = []
+    for node in old_nodes:
+        new_text = ")".join(node.text.split('!')).split(')')
+        if(len(new_text) == 1):
+            new_nodes.append(node)
+            continue
+        if(len(new_text)%2 == 0):
+            raise Exception("each opening delimiter must have a closing delimiter")
+        is_normal_text = True
+        images_in_text = extract_markdown_images(node.text)
+        i = 0
+        for text in new_text:
+            if(is_normal_text):
+                if len(text) == 0:
+                    continue
+                new_nodes.append(TextNode(text, "text"))
+            else:
+                new_nodes.append(TextNode(images_in_text[i][0], "image", images_in_text[i][1]))
+                i += 1
+            is_normal_text = not is_normal_text
+    return new_nodes
+    
+def split_nodes_link(old_nodes):
+    new_nodes = []
+    for node in old_nodes:
+        new_text = ")".join(node.text.split('[')).split(')')
+        if(len(new_text) == 1):
+            new_nodes.append(node)
+            continue
+        if(len(new_text)%2 == 0):
+            raise Exception("each opening delimiter must have a closing delimiter")
+        is_normal_text = True
+        links_in_text = extract_markdown_links(node.text)
+        i = 0
+        for text in new_text:
+            if(is_normal_text):
+                if len(text) == 0:
+                    continue
+                new_nodes.append(TextNode(text, "text"))
+            else:
+                new_nodes.append(TextNode(links_in_text[i][0], "link", links_in_text[i][1]))
+                i += 1
+            is_normal_text = not is_normal_text
+        
+    return new_nodes
