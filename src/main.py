@@ -23,32 +23,16 @@ def text_node_to_html_node(text_node):
 
 
 def text_to_textnodes(text):
+    # initalizes a list of TextNodes
     nodes = [TextNode(text, "text")]
-    for node in nodes:
-        print(node)
-    print("-------------")
+    # splits nodes by delimiters
     nodes = split_nodes_delimiter(nodes, "**", "bold")
-    for node in nodes:
-        print(node)
-    print("-------------")
     nodes = split_nodes_delimiter(nodes, "*", "italic")
-    for node in nodes:
-        print(node)
-    print("-------------")
     nodes = split_nodes_delimiter(nodes, "`", "code")
-    for node in nodes:
-        print(node)
-    print("-------------")
+    # splits nodes by links and images
     nodes = split_nodes_image(nodes)
-    for node in nodes:
-        print(node)
-    print("-------------")
-
     nodes = split_nodes_link(nodes)
-    for node in nodes:
-        print(node)
-    print("-------------")
-
+    # returns the list of TextNodes
     return nodes
 def main():
     text_to_textnodes("This is **text** with an *italic* word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)")

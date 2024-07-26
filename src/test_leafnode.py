@@ -1,7 +1,4 @@
 import unittest
-import io
-from contextlib import redirect_stdout
-
 from leafnode import LeafNode
 
 class TestLeafNode(unittest.TestCase):
