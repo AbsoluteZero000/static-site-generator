@@ -28,48 +28,31 @@ def extract_markdown_links(text):
 def split_nodes_image(old_nodes):
     new_nodes = []
     for node in old_nodes:
-        # this is wrong I should match the exact thing
-        new_text = ")".join(node.text.split('!')).split(')')
-        if(len(new_text) == 1):
+        extracted_images = extract_markdown_images(node.text)
+        if(len(extracted_images) == 0):
             new_nodes.append(node)
             continue
-        if(len(new_text)%2 == 0):
-            raise Exception("each opening delimiter must have a closing delimiter")
-        is_normal_text = True
-        images_in_text = extract_markdown_images(node.text)
-        i = 0
-        for text in new_text:
-            if(is_normal_text):
-                if len(text) == 0:
-                    continue
-                new_nodes.append(TextNode(text, "text"))
-            else:
-                new_nodes.append(TextNode(images_in_text[i][0], "image", images_in_text[i][1]))
-                i += 1
-            is_normal_text = not is_normal_text
+        global_text = node.text
+        for image in extracted_images:
+            sections = global_text.split(f"![{image[0]}]({image[1]})", 1)
+            if(sections[0] != ""):
+                new_nodes.append(TextNode(sections[0], "text"))
+            new_nodes.append(TextNode(image[0], "image", image[1]))
+            global_text = sections[1]
     return new_nodes
 
 def split_nodes_link(old_nodes):
     new_nodes = []
     for node in old_nodes:
-        # this is wrong as well I should match the exact thing
-        new_text = ")".join(node.text.split('[')).split(')')
-        if(len(new_text) == 1):
+        extracted_links = extract_markdown_links(node.text)
+        if(len(extracted_links) == 0):
             new_nodes.append(node)
             continue
-        if(len(new_text)%2 == 0):
-            raise Exception("each opening delimiter must have a closing delimiter")
-        is_normal_text = True
-        links_in_text = extract_markdown_links(node.text)
-        i = 0
-        for text in new_text:
-            if(is_normal_text):
-                if len(text) == 0:
-                    continue
-                new_nodes.append(TextNode(text, "text"))
-            else:
-                new_nodes.append(TextNode(links_in_text[i][0], "link", links_in_text[i][1]))
-                i += 1
-            is_normal_text = not is_normal_text
-
+        global_text = node.text
+        for link in extracted_links:
+            sections = global_text.split(f"[{link[0]}]({link[1]})", 1)
+            if(sections[0] != ""):
+                new_nodes.append(TextNode(sections[0], "text"))
+            new_nodes.append(TextNode(link[0], "link", link[1]))
+            global_text = sections[1]
     return new_nodes
