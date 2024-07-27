@@ -34,6 +34,9 @@ def text_to_textnodes(text):
     nodes = split_nodes_link(nodes)
     # returns the list of TextNodes
     return nodes
+
+def markdown_to_blocks(markdown):
+    return [block.strip() for block in markdown.split("\n\n") if block != ""] # removes empty blocks
 def main():
-    text_to_textnodes("This is **text** with an *italic* word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)")
+    pass
 main()

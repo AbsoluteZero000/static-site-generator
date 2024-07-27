@@ -19,5 +19,23 @@ class TestTextToHTML(unittest.TestCase):
                 )
         ]
         self.assertEqual(expected_output, text_to_textnodes(md))
+
+    def test_md_to_text_blocks(self):
+        markdown = """
+        # This is a heading
+
+This is a paragraph of text. It has some **bold** and *italic* words inside of it.
+
+* This is the first list item in a list block
+* This is a list item
+* This is another list item
+"""
+
+        blocks = markdown_to_blocks(markdown)
+        self.assertEqual(["# This is a heading",
+            "This is a paragraph of text. It has some **bold** and *italic* words inside of it.",
+"""* This is the first list item in a list block
+* This is a list item
+* This is another list item"""],            blocks)
 if __name__ == "__main__":
     unittest.main()
