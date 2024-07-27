@@ -1,7 +1,7 @@
 from leafnode import LeafNode
 from textnode import TextNode
 import re
-
+from htmlnode import HTMLNode
 from md_to_text_node import *
 
 def text_node_to_html_node(text_node):
@@ -52,6 +52,54 @@ def blocks_to_block_type(block):
     if(all(pattern.match(line) for line in block.split("\n"))):
         return "ordered_list"
     return "paragraph"
+def markdown_to_html_node(markdown):
+    blocks = markdown_to_blocks(markdown)
+    nodes = []
+    for block in blocks:
+        block_type = blocks_to_block_type(block)
+        node = None
+        match(block_type):
+            case "heading":
+                node = HTMLNode(f"h{len(block.split()[0])}", block)
+            case "paragraph":
+                node = HTMLNode("p", block)
+            case "unordered_list":
+                node = HTMLNode("ul", None, [HTMLNode("li", line) for line in block.split("\n")])
+            case "ordered_list":
+                node = HTMLNode("ol", None, [HTMLNode("li", line) for line in block.split("\n")])
+            case "code":
+                node = HTMLNode("code", block)
+            case "quote":
+                node = HTMLNode("blockquote", block)
+            case _:
+                raise ValueError("This is not a valid type of block")
+        nodes.append(node)
+    return HTMLNode("div", None, nodes)
+
 def main():
-    pass
+    print("---------------")
+    markdown = """# This is h1
+
+## This is h2
+
+### This is h3
+
+
+- This is an unordered list
+- This is another unordered list
+
+
+1. This is an ordered list
+1. This is another ordered list
+
+
+> This is a quote
+
+```
+this is a code block
+```"""
+
+
+
+    print(markdown_to_html_node(markdown))
 main()
