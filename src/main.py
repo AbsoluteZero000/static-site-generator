@@ -1,6 +1,6 @@
 from leafnode import LeafNode
 from textnode import TextNode
-
+import re
 
 from md_to_text_node import *
 
@@ -37,6 +37,21 @@ def text_to_textnodes(text):
 
 def markdown_to_blocks(markdown):
     return [block.strip() for block in markdown.split("\n\n") if block != ""] # removes empty blocks
+
+def blocks_to_block_type(block):
+    pattern = re.compile(r'^\d+\. ')
+
+    if(block.startswith("#")):
+        return "heading"
+    if(all(line.startswith("* ") for line in block.split("\n")) or all(line.startswith("- ") for line in block.split("\n"))):
+        return "unordered_list"
+    if(block.startswith("```") and block.endswith("```")):
+        return "code"
+    if(block.startswith(">")):
+        return "quote"
+    if(all(pattern.match(line) for line in block.split("\n"))):
+        return "ordered_list"
+    return "paragraph"
 def main():
     pass
 main()

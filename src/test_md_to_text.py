@@ -37,5 +37,15 @@ This is a paragraph of text. It has some **bold** and *italic* words inside of i
 """* This is the first list item in a list block
 * This is a list item
 * This is another list item"""],            blocks)
+
+    def test_text_blocks_to_types(self):
+        blocks = ["# This is a heading",
+            "This is a paragraph of text. It has some **bold** and *italic* words inside of it.",
+"""* This is the first list item in a list block
+* This is a list item
+* This is another list item"""]
+        self.assertEqual("heading", blocks_to_block_type(blocks[0]))
+        self.assertEqual("paragraph", blocks_to_block_type(blocks[1]))
+        self.assertEqual("unordered_list", blocks_to_block_type(blocks[2]))
 if __name__ == "__main__":
     unittest.main()
