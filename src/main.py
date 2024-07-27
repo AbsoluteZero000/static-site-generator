@@ -3,6 +3,9 @@ from textnode import TextNode
 import re
 from htmlnode import HTMLNode
 from md_to_text_node import *
+from copystatic import copy_files_recursive
+import os
+import shutil
 
 def text_node_to_html_node(text_node):
     match(text_node.text_type):
@@ -76,30 +79,19 @@ def markdown_to_html_node(markdown):
         nodes.append(node)
     return HTMLNode("div", None, nodes)
 
+
+
+
+dir_path_static = "./static"
+dir_path_public = "./public"
+
+
 def main():
-    print("---------------")
-    markdown = """# This is h1
+    print("Deleting public directory...")
+    if os.path.exists(dir_path_public):
+        shutil.rmtree(dir_path_public)
 
-## This is h2
+    print("Copying static files to public directory...")
+    copy_files_recursive(dir_path_static, dir_path_public)
 
-### This is h3
-
-
-- This is an unordered list
-- This is another unordered list
-
-
-1. This is an ordered list
-1. This is another ordered list
-
-
-> This is a quote
-
-```
-this is a code block
-```"""
-
-
-
-    print(markdown_to_html_node(markdown))
 main()
