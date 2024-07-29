@@ -24,9 +24,12 @@ def text_node_to_html_node(text_node):
         case _:
             raise ValueError("This is not a valid type of text_node")
 
+def extract_title(markdown):
+    return markdown.split("\n", 1)[0][2:].trim()
+
 
 def text_to_textnodes(text):
-    # initalizes a list of TextNodes
+    # initalizes a list of TextNodes     [testesjkjsd;alkfjsdjf, "text"]  (** bold **, "bold") (jasdfljk;adsjfkasd, "text")
     nodes = [TextNode(text, "text")]
     # splits nodes by delimiters
     nodes = split_nodes_delimiter(nodes, "**", "bold")
@@ -82,16 +85,21 @@ def markdown_to_html_node(markdown):
 
 
 
+
+def generate_page(from_path, template_path, dest_path):
+    with open(from_path, "r") as f:
+        markdown = f.read()
+
+
+
 dir_path_static = "./static"
 dir_path_public = "./public"
 
 
 def main():
-    print("Deleting public directory...")
     if os.path.exists(dir_path_public):
         shutil.rmtree(dir_path_public)
 
-    print("Copying static files to public directory...")
     copy_files_recursive(dir_path_static, dir_path_public)
 
 main()
